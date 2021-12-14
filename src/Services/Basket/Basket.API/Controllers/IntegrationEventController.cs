@@ -22,6 +22,6 @@ public class IntegrationEventController : ControllerBase
     [HttpPost("BasketVerified")]
     [Topic(DAPR_PUBSUB_NAME, nameof(BasketVerifiedIntegrationEvent))]
     public Task HandleAsync(BasketVerifiedIntegrationEvent @event,
-    [FromServices] BasketVerifiedIntegrationEventHandler handler)
-    => handler.HandleAsync(@event);
+        [FromServices] BasketVerifiedIntegrationEventHandler handler)
+        => handler.HandleAsync(@event);
 }
