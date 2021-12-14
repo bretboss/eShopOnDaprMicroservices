@@ -27,6 +27,7 @@ services:
       dockerfile: src/Services/Basket/Basket.API/Dockerfile
     depends_on:
       - identity-api
+      - catalog-api
       - redis
 
   basket-api-dapr:
@@ -40,6 +41,8 @@ services:
     build:
       context: .
       dockerfile: src/Web/BlazorClient.Host/Dockerfile
+    depends_on:
+      - webshoppingapigw
 
   catalog-api:
     image: ${REGISTRY:-eshopdapr}/catalog.api:${TAG:-latest}
@@ -47,6 +50,7 @@ services:
       context: .
       dockerfile: src/Services/Catalog/Catalog.API/Dockerfile
     depends_on:
+      - identity-api
       - sqldata
 
   catalog-api-dapr:
@@ -75,6 +79,7 @@ services:
       context: .
       dockerfile: src/Services/Ordering/Ordering.API/Dockerfile
     depends_on:
+      - identity-api
       - sqldata
 
   ordering-api-dapr:
@@ -88,6 +93,8 @@ services:
     build:
       context: .
       dockerfile: src/Services/Payment/Payment.API/Dockerfile
+    depends_on:
+      - identity-api
 
   payment-api-dapr:
     image: "daprio/daprd:1.5.1"
@@ -95,26 +102,13 @@ services:
     depends_on:
       - payment-api
 
-  webshoppingagg:
-    image: ${REGISTRY:-eshopdapr}/webshoppingagg:${TAG:-latest}
-    build:
-      context: .
-      dockerfile: src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator/Dockerfile
-    depends_on:
-      - basket-api
-      - catalog-api
-      - identity-api
-      - ordering-api
-      - sqldata
-
-  webshoppingagg-dapr:
-    image: "daprio/daprd:1.5.1"
-    network_mode: "service:webshoppingagg"
-    depends_on:
-      - webshoppingagg
-
   webshoppingapigw:
     image: envoyproxy/envoy:v1.14.2
+    depends_on:
+      - identity-api
+      - catalog-api
+      - basket-api
+      - payment-api
 
   webshoppingapigw-dapr:
     image: "daprio/daprd:1.5.1"
