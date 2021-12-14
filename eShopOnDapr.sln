@@ -113,6 +113,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "templates", "templates", "{
 		deploy\k8s\helm\templates\zipkin.yaml = deploy\k8s\helm\templates\zipkin.yaml
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Notification", "Notification", "{E1014EB8-33F7-41EC-B355-8EE6E54E54A0}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Notification.API", "src\Services\Notification\Notification.API\Notification.API.csproj", "{C90F31E1-76BB-46B5-9DDB-3D1B9D343AA7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -159,6 +163,10 @@ Global
 		{8AA9B06A-8D20-4F3A-BD64-6DE81940B1E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8AA9B06A-8D20-4F3A-BD64-6DE81940B1E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8AA9B06A-8D20-4F3A-BD64-6DE81940B1E7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C90F31E1-76BB-46B5-9DDB-3D1B9D343AA7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C90F31E1-76BB-46B5-9DDB-3D1B9D343AA7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C90F31E1-76BB-46B5-9DDB-3D1B9D343AA7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C90F31E1-76BB-46B5-9DDB-3D1B9D343AA7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -191,6 +199,8 @@ Global
 		{92C4A831-02BF-41ED-9127-271083B0F854} = {F4744DF4-E583-4FE9-90B6-85F40FC5D29F}
 		{1F9FC52F-034B-4FD1-B25F-41F33A3DFDF5} = {92C4A831-02BF-41ED-9127-271083B0F854}
 		{939F3654-D05C-494A-8590-49CCF303BD7D} = {1F9FC52F-034B-4FD1-B25F-41F33A3DFDF5}
+		{E1014EB8-33F7-41EC-B355-8EE6E54E54A0} = {4A00DE64-EC27-4F46-8782-47541FC40AE0}
+		{C90F31E1-76BB-46B5-9DDB-3D1B9D343AA7} = {E1014EB8-33F7-41EC-B355-8EE6E54E54A0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FBED0B95-87F8-439B-BC1E-382C8ABD4F2E}

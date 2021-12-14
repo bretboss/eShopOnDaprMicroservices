@@ -37,7 +37,7 @@ static_resources:
                 route:
                   auto_host_rewrite: true
                   prefix_rewrite: "/pics/"
-                  cluster: catalog
+                  cluster: catalog-api
               - name: "c-short"
                 match:
                   prefix: "/c/"
@@ -71,7 +71,7 @@ static_resources:
                   prefix: "/hub/notificationhub"
                 route:
                   auto_host_rewrite: true
-                  cluster: ordering-api
+                  cluster: notification-api
                   timeout: 300s
               - name: "b-short"
                 match:
@@ -117,7 +117,7 @@ static_resources:
     - socket_address:
         address: 127.0.0.1
         port_value: 3500
-  - name: catalog
+  - name: catalog-api
     connect_timeout: 0.25s
     type: strict_dns
     lb_policy: round_robin
@@ -125,11 +125,11 @@ static_resources:
     - socket_address:
         address: catalog-api
         port_value: 80
-  - name: ordering-api
+  - name: notification-api
     connect_timeout: 0.25s
     type: strict_dns
     lb_policy: round_robin
     hosts:
     - socket_address:
-        address: ordering-api
+        address: notification-api
         port_value: 80

@@ -102,6 +102,20 @@ services:
     depends_on:
       - payment-api
 
+  notification-api:
+    image: ${REGISTRY:-eshopdapr}/notification.api:${TAG:-latest}
+    build:
+      context: .
+      dockerfile: src/Services/Notification/Notification.API/Dockerfile
+    depends_on:
+      - identity-api
+
+  notification-api-dapr:
+    image: "daprio/daprd:1.4.0"
+    network_mode: "service:notification-api"
+    depends_on:
+      - notification-api
+
   webshoppingapigw:
     image: envoyproxy/envoy:v1.14.2
     depends_on:

@@ -17,18 +17,16 @@ public class BasketClient
         return basket!;
     }
 
-    public async Task<IEnumerable<BasketItem>> SaveItemsAsync(IEnumerable<BasketItem> items)
+    public async Task<BasketData> SaveBasketAsync(BasketData basket)
     {
-        var request = new BasketData(items);
-
         var response = await _httpClient.PostAsJsonAsync(
             "b/api/v1/basket/",
-            request);
+            basket);
 
         response.EnsureSuccessStatusCode();
 
         var basketData = await response.Content.ReadFromJsonAsync<BasketData>();
-        return basketData!.Items;
+        return basketData!;
     }
 
     public async Task CheckoutAsync(BasketCheckout basketCheckout)

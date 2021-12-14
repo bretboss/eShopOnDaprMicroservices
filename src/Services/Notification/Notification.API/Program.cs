@@ -8,14 +8,9 @@ builder.AddCustomAuthentication();
 builder.AddCustomAuthorization(); 
 builder.AddCustomHealthChecks();
 builder.AddCustomApplicationServices();
-builder.AddCustomDatabase();
 
 builder.Services.AddDaprClient();
 builder.Services.AddControllers();
-builder.Services.AddActors(options =>
-{
-    options.Actors.RegisterActor<OrderingProcessActor>();
-});
 builder.Services.AddSignalR();
 
 var app = builder.Build();
@@ -33,7 +28,6 @@ app.UseAuthorization();
 
 app.MapGet("/", () => Results.LocalRedirect("~/swagger"));
 app.MapControllers();
-app.MapActorsHandlers();
 app.MapSubscribeHandler();
 app.MapHealthChecks("/hc", new HealthCheckOptions()
 {
@@ -44,14 +38,11 @@ app.MapHealthChecks("/liveness", new HealthCheckOptions
 {
     Predicate = r => r.Name.Contains("self")
 });
-//app.MapHub<NotificationsHub>("/hub/notificationhub",
-//    options => options.Transports = Microsoft.AspNetCore.Http.Connections.HttpTransportType.LongPolling);
+app.MapHub<NotificationsHub>("/hub/notificationhub",
+    options => options.Transports = Microsoft.AspNetCore.Http.Connections.HttpTransportType.LongPolling);
 
 try
 {
-    app.Logger.LogInformation("Applying database migration ({ApplicationName})...", appName);
-    app.ApplyDatabaseMigration();
-
     app.Logger.LogInformation("Starting web host ({ApplicationName})...", appName);
     app.Run();
 }
@@ -63,6 +54,3 @@ finally
 {
     Serilog.Log.CloseAndFlush();
 }
-
-
-

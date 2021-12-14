@@ -106,6 +106,7 @@ services:
       - OrderingApiUrlExternal=http://${ESHOP_EXTERNAL_DNS_NAME_OR_IP}:5102
       # Temporarily while waiting for https://github.com/dapr/dotnet-sdk/issues/779 to get fixed.
       - ConnectionStrings__IdentityDB=Server=sqldata;Database=Microsoft.eShopOnDapr.Service.IdentityDb;User Id=sa;Password=Pass@word;TrustServerCertificate=true
+      - NotificationApiUrlExternal=http://${ESHOP_EXTERNAL_DNS_NAME_OR_IP}:5109
     ports:
       - "5105:80"
       - "50009:50001"
@@ -161,6 +162,28 @@ services:
   payment-api-dapr:
     command: ["./daprd",
       "-app-id", "payment-api",
+      "-app-port", "80",
+      "-components-path", "/components",
+      "-config", "/configuration/eshop-config.yaml"
+      ]
+    volumes:
+      - "./dapr/components/:/components"
+      - "./dapr/configuration/:/configuration"
+
+  notification-api:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://0.0.0.0:80
+      - IdentityUrl=http://identity-api
+      - IdentityUrlExternal=http://${ESHOP_EXTERNAL_DNS_NAME_OR_IP}:5105
+      - SeqServerUrl=http://seq
+    ports:
+      - "5109:80"
+      - "50007:50001"
+
+  notification-api-dapr:
+    command: ["./daprd",
+      "-app-id", "notification-api",
       "-app-port", "80",
       "-components-path", "/components",
       "-config", "/configuration/eshop-config.yaml"
