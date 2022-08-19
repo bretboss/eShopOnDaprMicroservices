@@ -9,27 +9,24 @@ public class BasketClient
         _httpClient = httpClient;
     }
 
-    public async Task<IEnumerable<BasketItem>> GetItemsAsync()
+    public async Task<BasketData> GetBasketAsync()
     {
         var basket = await _httpClient.GetFromJsonAsync<BasketData>(
             "b/api/v1/basket/");
 
-        return basket!.Items;
+        return basket!;
     }
 
-    public async Task<IEnumerable<BasketItem>> SaveItemsAsync(IEnumerable<BasketItem> items)
+    public async Task<BasketData> SaveBasketAsync(BasketData basket)
     {
-        var request = new BasketData(items);
-
-        // Save items is a request to the Aggregator service.
         var response = await _httpClient.PostAsJsonAsync(
-            "api/v1/basket/",
-            request);
+            "b/api/v1/basket/",
+            basket);
 
         response.EnsureSuccessStatusCode();
 
         var basketData = await response.Content.ReadFromJsonAsync<BasketData>();
-        return basketData!.Items;
+        return basketData!;
     }
 
     public async Task CheckoutAsync(BasketCheckout basketCheckout)

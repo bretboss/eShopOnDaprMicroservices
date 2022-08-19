@@ -11,6 +11,7 @@ public class UserBasket
     }
 
     public List<BasketItem> Items { get; set; } = new();
+    public bool IsVerified { get; set;} = false;
 
     public int TotalItemCount => Items.Sum(item => item.Quantity);
 
@@ -21,8 +22,9 @@ public class UserBasket
 
     public async Task LoadAsync()
     {
-        Items = (await _basketClient.GetItemsAsync())
-            .ToList();
+        var basket = await _basketClient.GetBasketAsync();
+        Items = basket.Items.ToList();
+        IsVerified = basket.IsVerified;
 
         OnItemsChanged(EventArgs.Empty);
     }
@@ -44,9 +46,9 @@ public class UserBasket
                 item.Price,
                 1,
                 item.PictureFileName));
-        }
 
-        await SaveItemsAsync();
+            await SaveItemsAsync();
+        }
     }
 
     public async Task RemoveItemAsync(BasketItem item)
@@ -61,7 +63,7 @@ public class UserBasket
         var index = Items.IndexOf(item);
         if (index > -1 && quantity >= 1)
         {
-            Items[index] = Items[index] with { Quantity = quantity }; 
+            Items[index] = Items[index] with { Quantity = quantity };
 
             await SaveItemsAsync();
         }
@@ -89,9 +91,10 @@ public class UserBasket
 
     private async Task SaveItemsAsync()
     {
-        var verifiedItems = await _basketClient.SaveItemsAsync(Items);
+        var basket = await _basketClient.SaveBasketAsync(new BasketData(Items));
 
-        Items = verifiedItems.ToList();
+        Items = basket.Items.ToList();
+        IsVerified = basket.IsVerified;
 
         OnItemsChanged(EventArgs.Empty);
     }

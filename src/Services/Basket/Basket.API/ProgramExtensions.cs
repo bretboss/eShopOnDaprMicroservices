@@ -105,9 +105,12 @@ public static class ProgramExtensions
     {
         builder.Services.AddScoped<IEventBus, DaprEventBus>();
         builder.Services.AddScoped<OrderStatusChangedToSubmittedIntegrationEventHandler>();
+        builder.Services.AddScoped<VerifiedProductIntegrationEventHandler>();
+        builder.Services.AddScoped<BasketVerifiedIntegrationEventHandler>();
 
         builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-        builder.Services.AddScoped<IBasketRepository, DaprBasketRepository>();
+        //builder.Services.AddScoped<IBasketRepository, BasketStateRepository>();
+        builder.Services.AddScoped<IBasketRepository, BasketActorRepository>();
         builder.Services.AddScoped<IIdentityService, IdentityService>();
     }
 }

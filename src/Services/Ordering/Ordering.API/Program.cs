@@ -44,8 +44,8 @@ app.MapHealthChecks("/liveness", new HealthCheckOptions
 {
     Predicate = r => r.Name.Contains("self")
 });
-app.MapHub<NotificationsHub>("/hub/notificationhub",
-    options => options.Transports = Microsoft.AspNetCore.Http.Connections.HttpTransportType.LongPolling);
+//app.MapHub<NotificationsHub>("/hub/notificationhub",
+//    options => options.Transports = Microsoft.AspNetCore.Http.Connections.HttpTransportType.LongPolling);
 
 try
 {

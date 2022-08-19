@@ -17,15 +17,13 @@ Dapr enables developers using any language or framework to easily write microser
 
 eShopOnDapr evolves (or, *Daprizes*, if you will) the earlier eShopOnContainers application by integrating Dapr building blocks and components: 
 
-![eShopOnDapr reference application architecture.](./docs/media/buildingblocks.png)
+![eShopOnDapr reference application architecture.](./docs/media/buildingblocks-ms.png)
 
 As focus of the eShopOnDapr reference application is on Dapr, the original application has been updated. The updated architecture consists of:
 
 - A frontend web-app written in [Blazor](https://dotnet.microsoft.com/apps/aspnet/web-apps/blazor). It sends user requests to an API gateway microservice.
 
 - The API gateway abstracts the backend core microservices from the frontend client. It's implemented using [Envoy](https://www.envoyproxy.io/), a high performant, open-source service proxy. Envoy routes  incoming requests to various backend microservices. Most requests are simple CRUD operations (for example, get the list of brands from the catalog) and handled by a direct call to a backend microservice.
-
-- Other requests are logically more complex and require multiple microservices to work together. For these cases, eShopOnDapr implements an aggregator microservice that orchestrates a workflow across the microservices needed to complete the operation.
 
 - The set of core backend microservices includes functionality required for an eCommerce store. Each is self-contained and independent of the others. Following widely accepted domain decomposing patterns, each microservice isolates a specific *business capability*:
 
@@ -34,6 +32,7 @@ As focus of the eShopOnDapr reference application is on Dapr, the original appli
   - The identity service manages authentication and identity.
   - The ordering service handles all aspects of placing and managing orders.
   - The payment service transacts the customer's payment.
+  - The notification service handles all client-directed notifications using SignalR.
 
 - Finally, the event bus enables asynchronous publish/subscribe messaging across microservices. Developers can plug in any Dapr-supported message broker.
 

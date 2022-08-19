@@ -14,7 +14,7 @@ public class Config
         {
                 new ApiScope("basket", "Access to Basket API"),
                 new ApiScope("ordering", "Access to Ordering API"),
-                new ApiScope("shoppingaggr", "Access to Shopping Aggregator API")
+                new ApiScope("notification", "Access to Notification API")
         };
 
     public static IEnumerable<ApiResource> ApiResources =>
@@ -29,9 +29,9 @@ public class Config
                 {
                     Scopes = { "ordering" }
                 },
-                new ApiResource("shoppingaggr-api", "Shopping Aggregator API")
+                new ApiResource("notification-api", "Notification API")
                 {
-                    Scopes = { "shoppingaggr" }
+                    Scopes = { "notification" }
                 }
         };
 
@@ -66,7 +66,7 @@ public class Config
                         IdentityServerConstants.StandardScopes.Profile,
                         "basket",
                         "ordering",
-                        "shoppingaggr"
+                        "notification"
                     },
                 },
                 new Client
@@ -101,20 +101,20 @@ public class Config
                 },
                 new Client
                 {
-                    ClientId = "shoppingaggrswaggerui",
-                    ClientName = "Shopping Aggregator Swagger UI",
+                    ClientId = "notificationswaggerui",
+                    ClientName = "Notification Swagger UI",
                     AllowedGrantTypes = GrantTypes.Implicit,
                     AllowAccessTokensViaBrowser = true,
 
-                    RedirectUris = { $"{configuration["ShoppingAggregatorApiUrlExternal"]}/swagger/oauth2-redirect.html" },
-                    PostLogoutRedirectUris = { $"{configuration["ShoppingAggregatorApiUrlExternal"]}/swagger/" },
+                    RedirectUris = { $"{configuration["NotificationApiUrlExternal"]}/swagger/oauth2-redirect.html" },
+                    PostLogoutRedirectUris = { $"{configuration["NotificationApiUrlExternal"]}/swagger/" },
 
                     AllowedScopes =
                     {
-                        "basket",
-                        "shoppingaggr"
+                        "notification"
                     }
                 }
+
             };
     }
 }
