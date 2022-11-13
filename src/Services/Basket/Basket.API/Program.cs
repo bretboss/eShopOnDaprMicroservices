@@ -1,4 +1,6 @@
-﻿var appName = "Basket API";
+﻿using Microsoft.eShopOnDapr.Services.Basket.API.Actors;
+
+var appName = "Basket API";
 var builder = WebApplication.CreateBuilder();
 
 builder.AddCustomSerilog();
@@ -8,6 +10,11 @@ builder.AddCustomAuthentication();
 builder.AddCustomAuthorization();
 builder.AddCustomHealthChecks();
 builder.AddCustomApplicationServices();
+
+builder.Services.AddActors(options =>
+{
+    options.Actors.RegisterActor<BasketProcessActor>();
+});
 
 var app = builder.Build();
 
@@ -31,6 +38,7 @@ app.UseAuthorization();
 app.UseCors("CorsPolicy");
 app.MapDefaultControllerRoute();
 app.MapControllers();
+app.MapActorsHandlers();
 app.MapSubscribeHandler();
 app.MapCustomHealthChecks("/hc", "/liveness", UIResponseWriter.WriteHealthCheckUIResponse);
 
