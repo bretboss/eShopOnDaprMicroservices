@@ -87,13 +87,6 @@ static_resources:
                   auto_host_rewrite: true
                   prefix_rewrite: "/v1.0/invoke/basket-api/method/"
                   cluster: dapr
-              - name: "agg"
-                match:
-                  prefix: "/"
-                route:
-                  auto_host_rewrite: true
-                  prefix_rewrite: "/v1.0/invoke/webshoppingagg/method/"
-                  cluster: dapr
           http_filters:
           - name: envoy.cors
           - name: envoy.router

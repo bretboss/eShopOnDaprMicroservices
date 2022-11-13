@@ -19,8 +19,6 @@ data:
   HealthChecksUI__HealthChecks__3__Uri: http://ordering-api/hc
   HealthChecksUI__HealthChecks__4__Name: Payment API
   HealthChecksUI__HealthChecks__4__Uri: http://payment-api/hc
-  HealthChecksUI__HealthChecks__5__Name: Web Shopping Aggregator
-  HealthChecksUI__HealthChecks__5__Uri: http://webshoppingagg/hc
   HealthChecksUI__HealthChecks__6__Name: Blazor Client
   HealthChecksUI__HealthChecks__6__Uri: http://blazor-client/hc
 

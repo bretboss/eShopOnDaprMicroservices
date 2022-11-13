@@ -13,8 +13,7 @@ public class Config
         new ApiScope[]
         {
                 new ApiScope("basket", "Access to Basket API"),
-                new ApiScope("ordering", "Access to Ordering API"),
-                new ApiScope("shoppingaggr", "Access to Shopping Aggregator API")
+                new ApiScope("ordering", "Access to Ordering API")
         };
 
     public static IEnumerable<ApiResource> ApiResources =>
@@ -28,10 +27,6 @@ public class Config
                 new ApiResource("ordering-api", "Ordering API")
                 {
                     Scopes = { "ordering" }
-                },
-                new ApiResource("shoppingaggr-api", "Shopping Aggregator API")
-                {
-                    Scopes = { "shoppingaggr" }
                 }
         };
 
@@ -65,8 +60,7 @@ public class Config
                         IdentityServerConstants.StandardScopes.OpenId,
                         IdentityServerConstants.StandardScopes.Profile,
                         "basket",
-                        "ordering",
-                        "shoppingaggr"
+                        "ordering"
                     },
                 },
                 new Client
@@ -97,22 +91,6 @@ public class Config
                     AllowedScopes =
                     {
                         "ordering"
-                    }
-                },
-                new Client
-                {
-                    ClientId = "shoppingaggrswaggerui",
-                    ClientName = "Shopping Aggregator Swagger UI",
-                    AllowedGrantTypes = GrantTypes.Implicit,
-                    AllowAccessTokensViaBrowser = true,
-
-                    RedirectUris = { $"{configuration["ShoppingAggregatorApiUrlExternal"]}/swagger/oauth2-redirect.html" },
-                    PostLogoutRedirectUris = { $"{configuration["ShoppingAggregatorApiUrlExternal"]}/swagger/" },
-
-                    AllowedScopes =
-                    {
-                        "basket",
-                        "shoppingaggr"
                     }
                 }
             };
