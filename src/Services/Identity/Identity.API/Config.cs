@@ -13,7 +13,8 @@ public class Config
         new ApiScope[]
         {
                 new ApiScope("basket", "Access to Basket API"),
-                new ApiScope("ordering", "Access to Ordering API")
+                new ApiScope("ordering", "Access to Ordering API"),
+                new ApiScope("notification", "Access to Notification API")
         };
 
     public static IEnumerable<ApiResource> ApiResources =>
@@ -27,6 +28,10 @@ public class Config
                 new ApiResource("ordering-api", "Ordering API")
                 {
                     Scopes = { "ordering" }
+                },
+                new ApiResource("notification-api", "Notification API")
+                {
+                    Scopes = { "notification" }
                 }
         };
 
@@ -60,7 +65,8 @@ public class Config
                         IdentityServerConstants.StandardScopes.OpenId,
                         IdentityServerConstants.StandardScopes.Profile,
                         "basket",
-                        "ordering"
+                        "ordering",
+                        "notification"
                     },
                 },
                 new Client
@@ -92,7 +98,23 @@ public class Config
                     {
                         "ordering"
                     }
+                },
+                new Client
+                {
+                    ClientId = "notificationswaggerui",
+                    ClientName = "Notification Swagger UI",
+                    AllowedGrantTypes = GrantTypes.Implicit,
+                    AllowAccessTokensViaBrowser = true,
+
+                    RedirectUris = { $"{configuration["NotificationApiUrlExternal"]}/swagger/oauth2-redirect.html" },
+                    PostLogoutRedirectUris = { $"{configuration["NotificationApiUrlExternal"]}/swagger/" },
+
+                    AllowedScopes =
+                    {
+                        "notification"
+                    }
                 }
+
             };
     }
 }

@@ -16,11 +16,13 @@ public class BasketProcessActor : Actor, IBasketProcessActor
         _eventBus = eventBus;
     }
 
-    private string BasketActorId => Id.GetId();
+    private string GetBuyerId() => Id.GetId();
 
-    public Task<CustomerBasket> GetBasketAsync()
+    public async Task<CustomerBasket> GetBasketAsync()
     {
-        return StateManager.GetStateAsync<CustomerBasket>(BasketStateStorage);
+        var result = await StateManager.TryGetStateAsync<CustomerBasket>(BasketStateStorage);
+        
+        return result.HasValue? result.Value : new CustomerBasket(GetBuyerId());
     }
 
     public async Task DeleteBasketAsync()
@@ -34,7 +36,7 @@ public class BasketProcessActor : Actor, IBasketProcessActor
         await StateManager.SetStateAsync(BasketStateStorage, basket);
         await StateManager.SetStateAsync(BasketStatusStorage, BasketStatus.AwaitingProductValidation);
 
-        await _eventBus.PublishAsync(new VerifyProductIntegrationEvent(BasketActorId, basket.Items.Select(i => i.ProductId).ToArray()));
+        await _eventBus.PublishAsync(new VerifyProductIntegrationEvent(GetBuyerId(), basket.Items.Select(i => i.ProductId).ToArray()));
     }
 
     public async Task VerifyBasketAsync(IEnumerable<Product> products)
@@ -50,8 +52,8 @@ public class BasketProcessActor : Actor, IBasketProcessActor
 
             if(verifiedBasket.IsVerified)
             { 
-                await _eventBus.PublishAsync(new BasketValidatedIntegrationEvent(
-                    BasketActorId,
+                await _eventBus.PublishAsync(new BasketVerifiedIntegrationEvent(
+                    GetBuyerId(),
                     "All the products were confirmed as valid.",
                     basket.GetTotal(),
                     basket.BuyerId));
@@ -65,7 +67,7 @@ public class BasketProcessActor : Actor, IBasketProcessActor
         if (!basketStatus.HasValue)
         {
             Logger.LogWarning("Basket with Id: {BasketActorId} cannot be updated because it doesn't exist",
-                BasketActorId);
+                GetBuyerId());
 
             return false;
         }
@@ -73,7 +75,7 @@ public class BasketProcessActor : Actor, IBasketProcessActor
         if (basketStatus.Value.Id != expectedStatus.Id)
         {
             Logger.LogWarning("Basket with Id: {BasketActorId} is in status {Status} instead of expected status {ExpectedStatus}",
-                BasketActorId, basketStatus.Value.Name, expectedStatus.Name);
+                GetBuyerId(), basketStatus.Value.Name, expectedStatus.Name);
 
             return false;
         }

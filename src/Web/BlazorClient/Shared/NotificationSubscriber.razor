@@ -3,13 +3,16 @@
 @inject NavigationManager _navigationManager
 
 <CascadingValue Value="_orderState">
-    @ChildContent
+    <CascadingValue Value="_basketState">
+        @ChildContent
+    </CascadingValue>
 </CascadingValue>
 
 @code {
 
     private HubConnection? _hubConnection;
     private OrderState? _orderState;
+    private BasketState? _basketState;
 
     [Parameter]
     public RenderFragment ChildContent { get; set; } = null!;
@@ -39,6 +42,7 @@
                 .Build();
 
             _hubConnection.On<OrderState>("UpdatedOrderState", OnUpdatedOrderState);
+            _hubConnection.On<BasketState>("UpdatedBasketState", OnUpdatedBasketState);
 
             await _hubConnection.StartAsync();
         }
@@ -62,6 +66,13 @@
         // Set cascading parameter to let descendants know that the order state
         // has changed.
         _orderState = orderState;
+
+        StateHasChanged();
+    }
+
+    private void OnUpdatedBasketState(BasketState basketState)
+    {
+        _basketState = basketState;
 
         StateHasChanged();
     }

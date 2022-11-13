@@ -13,6 +13,7 @@ data:
   SeqServerUrl: http://seq
   IssuerUrl: http://{{ .Values.hostName}}
   BlazorClientUrlExternal: http://{{ .Values.hostName}}
+  NotificationApiUrlExternal: http://{{ .Values.externalDnsNameOrIP}}:30003
 
 ---
 

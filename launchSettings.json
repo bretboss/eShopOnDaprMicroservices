@@ -26,6 +26,8 @@
         "ordering-api-dapr": "StartWithoutDebugging",
         "payment-api": "StartDebugging",
         "payment-api-dapr": "StartWithoutDebugging",
+        "notification-api": "StartDebugging",
+        "notification-api-dapr": "StartWithoutDebugging",
         "blazor-client": "StartDebugging"
       }
     }

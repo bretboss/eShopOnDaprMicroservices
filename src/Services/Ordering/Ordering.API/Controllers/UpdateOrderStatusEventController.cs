@@ -7,18 +7,18 @@ public class UpdateOrderStatusEventController : ControllerBase
     private const string DAPR_PUBSUB_NAME = "eshopondapr-pubsub";
 
     private readonly IOrderRepository _orderRepository;
-    private readonly IHubContext<NotificationsHub> _hubContext;
+    private readonly IEventBus _eventBus;
     private readonly IActorProxyFactory _actorProxyFactory;
     private readonly ILogger<UpdateOrderStatusEventController> _logger;
 
     public UpdateOrderStatusEventController(
         IOrderRepository orderRepository,
-        IHubContext<NotificationsHub> hubContext,
+        IEventBus eventBus,
         IActorProxyFactory actorProxyFactory,
         ILogger<UpdateOrderStatusEventController> logger)
     {
         _orderRepository = orderRepository ?? throw new ArgumentNullException(nameof(orderRepository));
-        _hubContext = hubContext ?? throw new ArgumentNullException(nameof(hubContext));
+        _eventBus = eventBus ?? throw new ArgumentNullException(nameof(eventBus)); ;
         _actorProxyFactory = actorProxyFactory ?? throw new ArgumentNullException(nameof(actorProxyFactory));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
@@ -120,8 +120,6 @@ public class UpdateOrderStatusEventController : ControllerBase
     private Task SendNotificationAsync(
         int orderNumber, string orderStatus, string buyerId)
     {
-        return _hubContext.Clients
-            .Group(buyerId)
-            .SendAsync("UpdatedOrderState", new { OrderNumber = orderNumber, Status = orderStatus });
+        return _eventBus.PublishAsync(new SendNotificationIntegrationEvent(buyerId, "UpdatedOrderState", new { OrderNumber = orderNumber, Status = orderStatus }));
     }
 }

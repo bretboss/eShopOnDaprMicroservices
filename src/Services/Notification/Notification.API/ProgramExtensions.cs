@@ -1,11 +1,20 @@
 ﻿// Only use in this file to avoid conflicts with Microsoft.Extensions.Logging
+using Microsoft.eShopOnDapr.Services.Notification.API.Infrastructure.Services;
+using Microsoft.eShopOnDapr.Services.Notification.API.IntegrationEvents.EventHandling;
 using Serilog;
 
-namespace Microsoft.eShopOnDapr.Services.Basket.API;
+namespace Microsoft.eShopOnDapr.Services.Ordering.API;
 
 public static class ProgramExtensions
 {
-    private const string AppName = "Basket API";
+    private const string AppName = "Ordering API";
+
+    public static void AddCustomConfiguration(this WebApplicationBuilder builder)
+    {
+        builder.Configuration.AddDaprSecretStore(
+            "eshop-secretstore",
+            new DaprClientBuilder().Build());
+    }
 
     public static void AddCustomSerilog(this WebApplicationBuilder builder)
     {
@@ -40,7 +49,7 @@ public static class ProgramExtensions
                         TokenUrl = new Uri($"{identityUrlExternal}/connect/token"),
                         Scopes = new Dictionary<string, string>()
                             {
-                                { "basket", AppName }
+                                { "notification", AppName }
                             }
                     }
                 }
@@ -56,15 +65,9 @@ public static class ProgramExtensions
         app.UseSwaggerUI(c =>
         {
             c.SwaggerEndpoint("/swagger/v1/swagger.json", $"{AppName} V1");
-            c.OAuthClientId("basketswaggerui");
-            c.OAuthAppName("Basket Swagger UI");
+            c.OAuthClientId("orderingswaggerui");
+            c.OAuthAppName("Ordering Swagger UI");
         });
-    }
-
-    public static void AddCustomMvc(this WebApplicationBuilder builder)
-    {
-        // TODO DaprClient good enough?
-        builder.Services.AddControllers().AddDapr();
     }
 
     public static void AddCustomAuthentication(this WebApplicationBuilder builder)
@@ -75,7 +78,7 @@ public static class ProgramExtensions
         builder.Services.AddAuthentication("Bearer")
             .AddJwtBearer(options =>
             {
-                options.Audience = "basket-api";
+                options.Audience = "ordering-api";
                 options.Authority = builder.Configuration.GetValue<string>("IdentityUrl");
                 options.RequireHttpsMetadata = false;
             });
@@ -88,29 +91,25 @@ public static class ProgramExtensions
             options.AddPolicy("ApiScope", policy =>
             {
                 policy.RequireAuthenticatedUser();
-                policy.RequireClaim("scope", "basket");
+                policy.RequireClaim("scope", "ordering");
             });
         });
     }
 
-    public static void AddCustomHealthChecks(this WebApplicationBuilder builder)
-    {
-        builder.Services
-                .AddHealthChecks()
-                .AddCheck("self", () => HealthCheckResult.Healthy())
-                .AddDapr();
-    }
+    public static void AddCustomHealthChecks(this WebApplicationBuilder builder) =>
+        builder.Services.AddHealthChecks()
+            .AddCheck("self", () => HealthCheckResult.Healthy())
+            .AddDapr()
+            .AddSqlServer(
+                builder.Configuration["ConnectionStrings.OrderingDB"],
+                name: "OrderingDB-check",
+                tags: new string[] { "orderdb" });
 
     public static void AddCustomApplicationServices(this WebApplicationBuilder builder)
     {
         builder.Services.AddScoped<IEventBus, DaprEventBus>();
-        builder.Services.AddScoped<OrderStatusChangedToSubmittedIntegrationEventHandler>();
-        builder.Services.AddScoped<VerifiedProductIntegrationEventHandler>();
-        builder.Services.AddScoped<BasketVerifiedIntegrationEventHandler>();
-
         builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-        //builder.Services.AddScoped<IBasketRepository, BasketStateRepository>();
-        builder.Services.AddScoped<IBasketRepository, BasketActorRepository>();
+        builder.Services.AddScoped<SendNotificationIntegrationEventHandler>();
         builder.Services.AddScoped<IIdentityService, IdentityService>();
     }
 }

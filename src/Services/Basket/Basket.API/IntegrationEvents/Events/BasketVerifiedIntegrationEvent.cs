@@ -1,6 +1,6 @@
 ﻿namespace Microsoft.eShopOnDapr.Services.Basket.API.IntegrationEvents.Events;
 
-public record BasketValidatedIntegrationEvent(
+public record BasketVerifiedIntegrationEvent(
     string BasketActorId,
     string Description,
     decimal Total,

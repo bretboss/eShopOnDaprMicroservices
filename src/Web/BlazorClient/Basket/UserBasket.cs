@@ -46,9 +46,9 @@ public class UserBasket
                 item.Price,
                 1,
                 item.PictureFileName));
-        }
 
-        await SaveItemsAsync();
+            await SaveItemsAsync();
+        }
     }
 
     public async Task RemoveItemAsync(BasketItem item)
@@ -63,7 +63,7 @@ public class UserBasket
         var index = Items.IndexOf(item);
         if (index > -1 && quantity >= 1)
         {
-            Items[index] = Items[index] with { Quantity = quantity }; 
+            Items[index] = Items[index] with { Quantity = quantity };
 
             await SaveItemsAsync();
         }
@@ -91,9 +91,10 @@ public class UserBasket
 
     private async Task SaveItemsAsync()
     {
-        var verifiedItems = await _basketClient.SaveItemsAsync(Items);
+        var basket = await _basketClient.SaveBasketAsync(new BasketData(Items));
 
-        Items = verifiedItems.ToList();
+        Items = basket.Items.ToList();
+        IsVerified = basket.IsVerified;
 
         OnItemsChanged(EventArgs.Empty);
     }
